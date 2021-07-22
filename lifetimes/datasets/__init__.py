@@ -4,6 +4,8 @@
 import pandas as pd
 from .. import utils
 from pkg_resources import resource_filename
+from lifetimes.datasets import load_cluster_data,load_cluster_data_from_table
+
 
 __all__ = [
     'load_cdnow_summary',
@@ -11,7 +13,6 @@ __all__ = [
     'load_cdnow_summary_data_with_monetary_value',
     'load_donations'
 ]
-
 
 def load_dataset(filename, **kwargs):
     """
@@ -33,17 +34,37 @@ def load_dataset(filename, **kwargs):
     """
     return pd.read_csv(resource_filename('lifetimes', 'datasets/' + filename), **kwargs)
 
-
+def load_dataset_from_csv(**kwargs):
+    """
+    Load a dataset from your hdfs cluster
+    If you want to add your own dataset, change the MYDATA.txt file
+    '/user/clouderanB/','bm_test_transactions.csv'
+    """
+    filename = [line.rstrip('\n') for line in open('lifetimes/MYDATA.txt','r')]
+    print(filename)
+    return load_cluster_data.read_my_csv(filename)
+  
+  
+def load_dataset_from_table(**kwargs):
+    """
+    Load a dataset from your hdfs cluster
+    If you want to add your own dataset, change the MYDATA.txt file
+    '/user/clouderanB/','bm_test_transactions.csv'
+    """
+    tablename = [line.rstrip('\n') for line in open('lifetimes/MYTABLE.txt','r')]
+    print(tablename)
+    return load_cluster_data_from_table.read_my_table(tablename[0])
+                       
 def load_donations(**kwargs):
     """Load donations dataset as pandas DataFrame."""
     return load_dataset('donations.csv', **kwargs)
 
-
+                       
 def load_cdnow_summary(**kwargs):
     """Load cdnow customers summary pandas DataFrame."""
     return load_dataset('cdnow_customers_summary.csv', **kwargs)
-
-
+                       
+                       
 def load_transaction_data(**kwargs):
     """
     Return a Pandas dataframe of transactional data.
@@ -62,6 +83,45 @@ def load_transaction_data(**kwargs):
 
     """
     return load_dataset('example_transactions.csv', **kwargs)
+
+def load_transaction_data_from_csv(**kwargs):
+    """
+    Return a Pandas dataframe of transactional data.
+
+    Looks like:
+
+                      date  id
+    0  2014-03-08 00:00:00   0
+    1  2014-05-21 00:00:00   1
+    2  2014-03-14 00:00:00   2
+    3  2014-04-09 00:00:00   2
+    4  2014-05-21 00:00:00   2
+
+    The data was artificially created using Lifetimes data generation routines. Data was generated
+    between 2014-01-01 to 2014-12-31.
+
+    """
+    return load_dataset_from_csv(**kwargs)
+  
+  
+def load_transaction_data_from_table(**kwargs):
+    """
+    Return a Pandas dataframe of transactional data.
+
+    Looks like:
+
+                      date  id
+    0  2014-03-08 00:00:00   0
+    1  2014-05-21 00:00:00   1
+    2  2014-03-14 00:00:00   2
+    3  2014-04-09 00:00:00   2
+    4  2014-05-21 00:00:00   2
+
+    The data was artificially created using Lifetimes data generation routines. Data was generated
+    between 2014-01-01 to 2014-12-31.
+
+    """
+    return load_dataset_from_table(**kwargs)
 
 
 def load_cdnow_summary_data_with_monetary_value(**kwargs):
